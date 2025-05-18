@@ -1,5 +1,8 @@
 package com.app.ems.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 		 					.orElseThrow(()->new ResourceNotFoundException("Employee is not exists with the given id : "+employeeId));
 		return EmployeeMapper.mapEmployeeToEmployeeDto(employee);
 	
+	}
+	public List<EmployeeDto> getAllEmployees() {
+		List<Employee> employees = employeeRepository.findAll();
+		List<EmployeeDto> employeeDtoList=new ArrayList<>();
+		for(Employee employee :employees) {
+	    employeeDtoList.add(EmployeeMapper.mapEmployeeToEmployeeDto(employee));
+		}
+		return employeeDtoList;//(ArrayList<EmployeeDto>)
+	}
+	@Override
+	public boolean deleteEmployeeById(Long employeeId) {
+		if(employeeRepository.existsById(employeeId)) {
+			employeeRepository.deleteById(employeeId);
+			return true;
+		}
+		return false;
 	}
 
 }
