@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,25 +26,25 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 	
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<EmployeeDto> createEmloyee(@RequestBody EmployeeDto employeeDto){
 		EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
 		
 		return new ResponseEntity<EmployeeDto>(savedEmployee,HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId){
 		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
 		return  ResponseEntity.ok(employeeDto);
 	}
 	
-	@GetMapping
+	@GetMapping("/fetchall")
 	public ResponseEntity<List<EmployeeDto>> getAllEmployees(){
 		List<EmployeeDto> employeeDtoList = employeeService.getAllEmployees();
 		return new ResponseEntity<List<EmployeeDto>>(employeeDtoList, HttpStatus.OK);
 	}
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteEmployeeById(@PathVariable("id") Long employeeId){
 		boolean isDeleted = employeeService.deleteEmployeeById(employeeId);
 	    if (isDeleted) {
@@ -52,6 +53,12 @@ public class EmployeeController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                             .body("Employee not found with ID: " + employeeId);
 	    }
+	}
+	
+	@PutMapping("/update/{id}")
+	public ResponseEntity<EmployeeDto> updateEmployeeById(@PathVariable("id") Long employeeId, @RequestBody EmployeeDto updatedEmployee){
+		EmployeeDto updateEmployeeById = employeeService.updateEmployeeById(employeeId, updatedEmployee);
+		return ResponseEntity.ok(updateEmployeeById);
 	}
 	
 	
